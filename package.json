@@ -1,0 +1,46 @@
+{
+  "name": "arcane-arcade-payments",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "bee-queue": "^1.2.3",
+    "body-parser": "^1.19.0",
+    "bull": "^3.18.0",
+    "bull-arena": "^3.2.2",
+    "cryptojs": "^2.5.3",
+    "express": "^4.17.1",
+    "openpgp": "^4.10.8",
+    "pg": "^8.3.3",
+    "random-bytes": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-stage-2": "^7.8.3",
+    "@babel/register": "^7.11.5",
+    "@babel/runtime": "^7.11.2",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^8.1.0",
+    "babel-node": "0.0.1-security",
+    "babel-preset-latest": "^6.24.1",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "nodemon": "^2.0.4",
+    "sequelize": "^6.3.5",
+    "sequelize-cli": "^6.2.0"
+  },
+  "scripts": {
+    "dev": "nodemon --exec babel-node ./api/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

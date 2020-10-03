@@ -1,16 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const BitcoinAddress = sequelize.define('BitcoinAddress', {
-    wallet_id: {
-      type: DataTypes.UUID,
-      references: {
-        model: 'Wallets',
-        key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-      allowNull: false
-    },
     seg_wit_address: {
       type: DataTypes.STRING,
       allowNull: false
@@ -39,10 +29,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    coin_type: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -51,9 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     deposit_amount: {
       type: DataTypes.DECIMAL,
       defaultValue: 0.0
-    },
-    trade_id: {
-      type: DataTypes.STRING
     },
     expires_at: {
       type: DataTypes.DATE
@@ -67,7 +50,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {  });
   BitcoinAddress.associate = function(models) {
-    BitcoinAddress.belongsTo(models.Wallet, { foreignKey: 'wallet_id' });
+    BitcoinAddress.hasOne(models.BTCTransaction, { foreign_key: 'bitcoin_address_id' });
+
   };
   return BitcoinAddress;
 };

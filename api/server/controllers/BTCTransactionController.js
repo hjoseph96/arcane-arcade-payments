@@ -25,11 +25,11 @@ class BTCTransactionController {
 
   static async addTransaction(req, res) {
     const {
-      tx_id, tx_n, wallet_id, coin_amount, fee_amount, fee_address,
+      tx_id, tx_n, coin_amount, fee_amount, fee_address,
       return_amount, target_address, script_pub_key, sent_from_address
     } = req.body;
 
-    const missingRequiredKeys = !tx_id || !wallet_id || !coin_amount || tx_n ||
+    const missingRequiredKeys = !tx_id || !coin_amount || tx_n ||
                                 !fee_amount || !fee_address || !return_amount ||
                                 !target_address || !script_pub_key || !sent_from_address
     if (missingRequiredKeys) {
@@ -64,7 +64,6 @@ class BTCTransactionController {
 
     const tx = coins.createTransaction(newTransaction);
     const transactionAttrs = {
-      wallet_id: req.body.wallet_id,
       payment_inputs: newTransaction.paymentInputs,
       payment_outputs: newTransaction.paymentOutputs,
       raw_transaction: tx

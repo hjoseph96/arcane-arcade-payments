@@ -16,39 +16,32 @@ class BitcoinAddressController {
   static async addAddress(req, res) {
     const coins = Coinjs
 
-    if (!req.body.wallet_id || !req.body.coin_type || !req.body.expires_at || !req.body.deposit_amount || !req.body.trade_id) {
+
+    if (!req.body.expires_at || !req.body.deposit_amount) {
+      console.log(req.body)
       util.setError(400, 'Please provide complete details');
       return util.send(res);
     }
 
-    const coin_type = req.body.coin_type;
-    if (coin_type !== 'BTC') {
-      util.setError(400, `Unsupported coin type: ${coin_type}`);
-      return util.send(res);
-    }
 
     const testMode = ['development', 'test'].indexOf(process.env.NODE_ENV) >= 0;
 
-    if (testMode && coin_type == 'BTC') coins.setToTestnet();
+    if (testMode) coins.setToTestnet();
 
     let newkeys = coins.newKeys(null);
     let sw = coins.bech32Address(newkeys.pubkey);
 
     const expiresInAnHour   = Date.parse(req.body.expires_at);
     const expectedDeposit   = req.body.deposit_amount;
-    const tradeId  = req.body.trade_id;
 
     const newAddress = {
       active: true,
       wif: newkeys.wif,
-      trade_id: tradeId,
-      coin_type: coin_type,
       address: newkeys.address,
       expires_at: expiresInAnHour,
       public_key: newkeys.pubkey,
       seg_wit_address: sw.address,
       private_key: newkeys.privkey,
-      wallet_id: req.body.wallet_id,
       redeem_script: sw.redeemscript,
       compressed: newkeys.compressed,
       deposit_amount: expectedDeposit
@@ -56,8 +49,10 @@ class BitcoinAddressController {
 
     try {
       const createdAddress = await BitcoinAddressService.addAddress(newAddress);
-      util.setSuccess(201, 'Address Added!', createdAddress);
 
+      console.log(`NEW BTC ADDRESS: ${createdAddress.address}`);
+      
+      util.setSuccess(201, 'Address Added!', createdAddress);
       return util.send(res);
     } catch (error) {
       console.log(error);
@@ -236,7 +231,6 @@ class BitcoinAddressController {
            const transactionAttrs = {
              raw_transaction: tx,
              transaction_id: response.tx.hash,
-             wallet_id: centralAddress.wallet_id,
              payment_inputs: newTransaction.paymentInputs,
              payment_outputs: newTransaction.paymentOutputs
            };

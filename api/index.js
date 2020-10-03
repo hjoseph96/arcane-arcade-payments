@@ -2,16 +2,15 @@ import config from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import bitcoinRoutes          from './server/routes/BitcoinAddressRoutes';
-import walletRoutes           from './server/routes/WalletRoutes';
-import BTCTransactionRoutes   from './server/routes/BTCTransactionRoutes';
-import pgpRoutes              from './server/routes/PGPRoutes';
-import moneroRoutes           from './server/routes/MoneroRoutes';
+import bitcoinRoutes from './server/routes/BitcoinAddressRoutes';
+import BTCTransactionRoutes from './server/routes/BTCTransactionRoutes';
+import pgpRoutes from './server/routes/PGPRoutes';
+import moneroRoutes from './server/routes/MoneroRoutes';
 
-import CentralWalletService       from './server/services/CentralWalletService.js'
-import MoneroService              from './server/services/MoneroService'
-import DetectBTCDepositsQueue     from './server/queues/DetectBTCDepositsQueue'
-import DetectMoneroDepositsQueue  from './server/queues/DetectMoneroDeposits'
+import CentralWalletService from './server/services/CentralWalletService.js'
+import MoneroService from './server/services/MoneroService'
+import DetectBTCDepositsQueue from './server/queues/DetectBTCDepositsQueue'
+import DetectMoneroDepositsQueue from './server/queues/DetectMoneroDeposits'
 
 config.config();
 
@@ -23,7 +22,7 @@ const port = process.env.PORT || 8000;// when a random route is inputed
 
 const Arena = require('bull-arena');
 
-const redisUrl = process.env.REDIS_URL;
+// const redisUrl = process.env.REDIS_URL;
 // const Bee = require('bee-queue');
 // const arena = Arena({
 //    Bee,
@@ -44,23 +43,29 @@ const redisUrl = process.env.REDIS_URL;
 app.use('/api/v1/pgp', pgpRoutes);
 app.use('/api/v1/xmr', moneroRoutes);
 app.use('/api/v1/btc', bitcoinRoutes);
-app.use('/api/v1/wallets', walletRoutes);
 app.use('/api/v1/btc_transactions', BTCTransactionRoutes);
 
 // app.use('/arena', arena);
 
 app.get('*', (req, res) => res.status(200).send({
-   message: 'Welcome to this API.'
+  message: 'Welcome to this API.'
 }));
 
 
 app.listen(port, () => {
-   console.log(`Server is running on PORT ${port}`);
+  console.log(`Server is running on PORT ${port}`);
 });
 
 // Queue Coin Deposits Search
 DetectBTCDepositsQueue.empty();
-DetectBTCDepositsQueue.add({ env: process.env.NODE_ENV }, { repeat: { every: 15000 }, removeOnComplete: false, removeOnFail: false });
+DetectBTCDepositsQueue.add(
+  { env: process.env.NODE_ENV },
+  {
+    repeat: { every: 15000 },
+    removeOnComplete: false,
+    removeOnFail: false
+  }
+);
 
 DetectMoneroDepositsQueue.empty();
 DetectMoneroDepositsQueue.add({ env: process.env.NODE_ENV }, { repeat: { every: 15000 }, removeOnComplete: false, removeOnFail: false });

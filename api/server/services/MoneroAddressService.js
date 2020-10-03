@@ -61,22 +61,10 @@ class MoneroAddressService {
         });
         return deletedAddress;
       }
-      
+
       return null;
     } catch (error) {
       throw error;
-    }
-  }
-
-  static async findAddressByWalletId(walletId) {
-    try {
-      const theAddress = await database.MoneroAddress.findOne({
-        where: { wallet_id: String(walletId) }
-      });
-
-      return theAddress;
-    } catch (e) {
-      throw e;
     }
   }
 

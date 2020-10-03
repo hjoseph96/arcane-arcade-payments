@@ -9,9 +9,9 @@ const util = new Util();
 export default class MoneroController {
 
     static async createAddress(req, res) {
-        const { wallet_id, trade_id, deposit_amount, expires_at } = req.body;
+        const { deposit_amount, expires_at } = req.body;
 
-        if (!String(wallet_id), !String(trade_id), !Number(deposit_amount), !Date(expires_at)) {
+        if (!Number(deposit_amount), !Date(expires_at)) {
             util.setError(400, 'Provide complete details to generate a new Monero address.');
 
             return util.send(res);
@@ -19,8 +19,6 @@ export default class MoneroController {
 
        try {
           const newAddress = await MoneroService.createAddress({
-            wallet_id: wallet_id,
-            trade_id: trade_id,
             expires_at: expires_at,
             deposit_amount: deposit_amount
           });

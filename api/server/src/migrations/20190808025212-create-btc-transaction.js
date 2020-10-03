@@ -23,14 +23,6 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false
       },
-      wallet_id: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Wallets',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE'
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

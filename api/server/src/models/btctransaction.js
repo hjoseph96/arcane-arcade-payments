@@ -24,19 +24,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    wallet_id: {
+    bitcoin_address_id: {
       type: DataTypes.UUID,
-      references: {
-        model: 'Wallets',
-        key: 'id'
-      },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
       allowNull: false
     }
   }, {});
   BTCTransaction.associate = function(models) {
-    BTCTransaction.belongsTo(models.Wallet, { foreignKey: 'wallet_id' });
+    BTCTransaction.belongsTo(models.BitcoinAddress, {
+      foreignKey: 'bitcoin_address_id'
+    });
   };
   return BTCTransaction;
 };

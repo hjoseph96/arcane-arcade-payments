@@ -9,16 +9,6 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      wallet_id: {
-        allowNull: true,
-        type: Sequelize.UUID,
-        references: {
-          model: 'Wallets',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
-      },
       address: {
         unique: true,
         type: Sequelize.STRING
@@ -39,9 +29,6 @@ module.exports = {
       },
       deposit_amount: {
         type: Sequelize.BIGINT
-      },
-      trade_id: {
-        type: Sequelize.STRING
       },
       subaddressIndex: {
         type: Sequelize.INTEGER,

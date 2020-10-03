@@ -19,7 +19,7 @@ const process = async (job) => {
 
   if (testMode) coins.setToTestnet();
 
-  // const sendToCentral = async (unspentTXs, { wif, destination_address, address, wallet_id }, total_amount) => {
+  // const sendToCentral = async (unspentTXs, { wif, destination_address, address }, total_amount) => {
   //   const activeAddress = await CentralWalletService.fetchOrCreateCentralAddress('BTC');
   //   const targetAddress = activeAddress.address;
   //
@@ -60,14 +60,12 @@ const process = async (job) => {
   //
   //     if (!response.error) {
   //       // do not update, let escrow handle it
-  //       // await updateBalance(wallet_id, amountToSend); // Update User's Wallet Balance
   //
   //       activeAddress.active = false;
   //       activeAddress.balance = amountToSend;
   //       await activeAddress.save(); // Update central address balance
   //
   //       const transactionAttrs = {
-  //         wallet_id: activeAddress.wallet_id,
   //         payment_inputs: newTransaction.paymentInputs,
   //         payment_outputs: newTransaction.paymentOutputs,
   //         raw_transaction: tx,
@@ -106,11 +104,8 @@ const process = async (job) => {
     where: {
       active: true,
       coin_type: 'BTC',
-      wallet_id: {
-        [Sequelize.Op.not]: centralWalletId
-      },
     },
-    attributes: ['id', 'wallet_id', 'address', 'wif', 'deposit_amount']
+    attributes: ['id', 'address', 'wif', 'deposit_amount']
   });
 
   for (let i = 0; i < addresses.length; i++) {

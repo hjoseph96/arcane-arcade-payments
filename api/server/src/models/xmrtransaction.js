@@ -40,29 +40,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    wallet_id: {
-      type: DataTypes.UUID,
-      references: {
-        model: 'Wallets',
-        key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-      allowNull: true
-    },
     monero_address_id: {
       type: DataTypes.UUID,
-      references: {
-        model: 'Wallets',
-        key: 'id'
-      },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
       allowNull: false
     }
   }, {});
   XMRTransaction.associate = function(models) {
-    XMRTransaction.belongsTo(models.Wallet, { foreignKey: 'wallet_id' });
     XMRTransaction.belongsTo(models.MoneroAddress, { foreignKey: 'monero_address_id' });
   };
   return XMRTransaction;

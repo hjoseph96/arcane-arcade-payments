@@ -9,15 +9,6 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      wallet_id: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Wallets',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        allowNull: true
-      },
       tx_id: {
         type: Sequelize.STRING,
         allowNull: false,

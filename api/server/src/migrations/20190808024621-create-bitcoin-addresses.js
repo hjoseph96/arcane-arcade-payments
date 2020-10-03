@@ -8,18 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      wallet_id: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Wallets',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
-      },
-      trade_id: {
-        type: Sequelize.STRING
-      },
       balance: {
         type: Sequelize.DECIMAL
       },
@@ -47,9 +35,6 @@ module.exports = {
       address: {
         active: true,
         allowNull: false,
-        type: Sequelize.STRING
-      },
-      coin_type: {
         type: Sequelize.STRING
       },
       active: {

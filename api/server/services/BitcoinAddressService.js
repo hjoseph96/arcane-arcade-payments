@@ -28,7 +28,7 @@ class BitcoinAddressService {
         await database.BitcoinAddress.update(updateAddress, {
           where: { id: Number(id) }
         });
-        
+
         return updateAddress;
       }
 
@@ -60,24 +60,12 @@ class BitcoinAddressService {
         const deletedAddress = await database.BitcoinAddress.destroy({
           where: { id: Number(id) }
         });
-        
+
         return deletedAddress;
       }
       return null;
     } catch (error) {
       throw error;
-    }
-  }
-
-  static async findAddressByWalletId(walletId) {
-    try {
-      const theAddress = await database.BitcoinAddress.findOne({
-        where: { wallet_id: UUIDV4(walletId) }
-      });
-
-      return theAddress;
-    } catch (e) {
-      throw e;
     }
   }
 

@@ -6,7 +6,7 @@ require('dotenv').config();
 
 class MoneroService {
     static async walletRPC() {
-        const MoneroWalletRpc = require('../../../node_modules/monero-javascript/src/main/wallet/MoneroWalletRpc');
+        const MoneroWalletRpc = require('../../../node_modules/monero-javascript/src/main/js/wallet/MoneroWalletRpc');
 
         let walletRpc = new MoneroWalletRpc(`http://localhost:${process.env.RPC_PORT}`, process.env.RPC_USER, process.env.RPC_PASSWORD);
 
@@ -14,7 +14,7 @@ class MoneroService {
     }
 
     static async daemon() {
-        const MoneroDaemonRpc = require('../../../node_modules/monero-javascript/src/main/daemon/MoneroDaemonRpc');
+        const MoneroDaemonRpc = require('../../../node_modules/monero-javascript/src/main/js/daemon/MoneroDaemonRpc');
 
         let daemon = new MoneroDaemonRpc(`http://localhost:${process.env.DAEMON_PORT}`);
         return daemon;
@@ -31,7 +31,7 @@ class MoneroService {
       await walletRPC.close(true);
     }
 
-    static async createAddress({ wallet_id, deposit_amount, destination_address, expires_at }) {
+    static async createAddress({  deposit_amount, destination_address, expires_at }) {
         const walletRPC  = await this.walletRPC();
 
         await walletRPC.openWallet(process.env.WALLET_FILENAME, process.env.WALLET_PASS);
@@ -42,7 +42,6 @@ class MoneroService {
         await walletRPC.close(true);
 
         const newAddress = await MoneroAddressService.addAddress({
-            wallet_id: wallet_id,
             deposit_amount: deposit_amount,
             destination_address: destination_address,
             balance: subAddress.state.balance,
@@ -51,7 +50,7 @@ class MoneroService {
             subaddressIndex: subAddress.state.index
         });
 
-        console.log(`Created XMR Address for wallet: ${wallet_id}`);
+        console.log('Created XMR Address');
 
         return newAddress;
     }
@@ -162,7 +161,6 @@ class MoneroService {
             key: createdTx.state.key,
             destination: destination,
             tx_id: createdTx.state.id,
-            walletId: subAddress.wallet_id,
             monero_address_id: subAddress.id,
             full_hex: createdTx.state.fullHex,
             metadata: createdTx.state.metadata,

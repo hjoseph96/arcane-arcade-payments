@@ -11,7 +11,7 @@ import BitcoinAddressService from '../services/BitcoinAddressService';
 
 class CentralWalletService {
 
-    static async withdraw({ target_address, coin_amount, wallet_id, coin_type }) {
+    static async withdraw({ target_address, coin_amount, coin_type }) {
         const loadedAddresses = await this.fetchAddressesWithBalance(coin_amount);
 
         const externalAPI = new BitcoinExternalAPI(coin_type);
@@ -32,7 +32,6 @@ class CentralWalletService {
             });
         }
 
-        // if (amountToRemove > centralBalance) throw new Error('Requested to withdraw more than is within the central wallet...');
         try {
             let txs = [];
             const miners_fee = await this.getMinersFee(coin_type);
@@ -46,7 +45,6 @@ class CentralWalletService {
                 let paymentInputs = [];
                 const balance = addrData.balance;
 
-                debugger;
                 if (amountToRemove > 0) {
                     if (balance <= amountToRemove) {
                         if (balance < miners_fee) continue;        // too little to broadcast tx
@@ -83,7 +81,6 @@ class CentralWalletService {
                     }
 
                     const newTx = await this.broadcastTx(coin_type, paymentInputs, paymentOutputs, addrData.wif);
-                    debugger;
                     txs.push(newTx);
                 }
             }
@@ -115,7 +112,6 @@ class CentralWalletService {
         if (broadcastedHex) {
             const newTransaction = {
                 raw_transaction: tx,
-                wallet_id: centralWalletId,
                 transaction_id: broadcastedHex.tx.hash,
                 payment_inputs: paymentInputs,
                 payment_outputs: paymentOutputs
@@ -144,14 +140,12 @@ class CentralWalletService {
 
         let addresses = await database.BitcoinAddress.findAll({
             where: {
-                wallet_id: centralWalletId,
                 balance: { [Sequelize.Op.gt]: 0 }
             },
             order: [['balance', 'ASC']]
         });
 
         addresses = await this.updateBalances(addresses);
-        debugger
 
         let payload = {
             total_balance: 0.0,
@@ -198,7 +192,7 @@ class CentralWalletService {
             include: [
                 {
                     model: database.BitcoinAddress,
-                    attributes: ['id', 'balance', 'address', 'wif', 'wallet_id'],
+                    attributes: ['id', 'balance', 'address', 'wif'],
                     where: { coin_type: coin_type, active: true }
                 }
             ]
@@ -224,7 +218,6 @@ class CentralWalletService {
               public_key:       newkeys.pubkey,
               private_key:      newkeys.privkey,
               seg_wit_address:  sw.address,
-              wallet_id:        centralWalletId,
               redeem_script:    sw.redeemscript,
               compressed:       newkeys.compressed
             }
@@ -249,7 +242,6 @@ class CentralWalletService {
             where: {
                 active: false,
                 coin_type: coin_type,
-                wallet_id: centralWalletId
             }
         })
 

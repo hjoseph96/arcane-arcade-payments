@@ -73,17 +73,11 @@ const process = async (job) => {
                 console.log(`DEPOSIT AMOUNT: ${unlockedBalance}`);
 
                 if (unlockedBalance == currentAddress.deposit_amount) {
-
-                    const updatedAddress = await MoneroAddressService.updateAddress(currentAddress.id, {
+                    await MoneroAddressService.updateAddress(currentAddress.id, {
                         active: false,
                         balance: unlockedBalance
                     });
 
-                    if (updatedAddress) {
-                        const userWallet = await WalletService.getWallet(currentAddress.wallet_id);
-
-                        console.log(`New Balance: ${newBalance} Wallet: ${userWallet.id}`);
-                    }
                 } else {
                     console.log('Invalid deposit amount received...');
 

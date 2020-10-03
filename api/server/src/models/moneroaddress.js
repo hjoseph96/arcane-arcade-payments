@@ -8,16 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    wallet_id: {
-      type: DataTypes.UUID,
-      references: {
-        model: 'Wallets',
-        key: 'id'
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-      allowNull: true
-    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -35,9 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       defaultValue: 0.0
     },
-    trade_id: {
-      type: DataTypes.STRING
-    },
     expires_at: {
       type: DataTypes.DATE
     },
@@ -52,7 +39,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   MoneroAddress.associate = function(models) {
-    MoneroAddress.belongsTo(models.Wallet, { foreignKey: 'wallet_id' });
     MoneroAddress.hasOne(models.XMRTransaction, { foreign_key: 'monero_address_id' });
   };
 

@@ -41,8 +41,9 @@ module.exports = (sequelize, DataTypes) => {
     expires_at: {
       type: DataTypes.DATE
     },
-    compressed: {
-      type: DataTypes.BOOLEAN
+    central: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     released: {
       type: DataTypes.BOOLEAN,

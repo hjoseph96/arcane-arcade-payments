@@ -98,12 +98,9 @@ const process = async (job) => {
 
   let currentPercentage = 0.00;
 
-  const centralWalletId = await CentralWalletService.fetchCentralWalletId();
-
   const addresses = await database.BitcoinAddress.findAll({
     where: {
-      active: true,
-      coin_type: 'BTC',
+      active: true
     },
     attributes: ['id', 'address', 'wif', 'deposit_amount']
   });
@@ -113,10 +110,13 @@ const process = async (job) => {
     currentPercentage = Number((percentage).toFixed(2)) * 100;
 
     const currentAddress = addresses[i];
+    console.log(`********* CHECKING ADDRESS: ${currentAddress.address}`)
     try {
       const response = await btcAPI.unspentTXs(currentAddress.address);
 
       if (response.error) {
+        console.log(`Error retrieving unspent transactions for address: ${currentAddress.address}`);
+
         throw new Error(`Error retrieving unspent transactions for address: ${currentAddress.address}`);
       } else if (response.unspents.length == 0) {
         console.log(`No unspent transactions found for: ${currentAddress.address}`)
@@ -124,7 +124,7 @@ const process = async (job) => {
 
         job.progress(currentPercentage);
 
-        if (currentPercentage == 100) {
+        if(currentPercentage == 100) {
           return;
         } else {
           continue;
@@ -135,12 +135,16 @@ const process = async (job) => {
         console.log('==============================================================================================================================\n\n\n\n\n');
 
         try {
+          console.log(`TOTAL: ${response.total_amount}`);
+          console.log(`DEPOSIT AMOUNT: ${currentAddress.deposit_amount}`);
           if (parseFloat(response.total_amount) == currentAddress.deposit_amount) {
             // Mark the address inactive, do not send it anywhere just yet.
 
             currentAddress.active = false;
             currentAddress.balance = response.total_amount;
             await currentAddress.save();
+
+            console.log("BALANCE SAVED")
 
             // await sendToCentral(response.unspents, currentAddress, parseFloat(response.total_amount));
           } else {

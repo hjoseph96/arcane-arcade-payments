@@ -27,6 +27,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+      central: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       deposit_amount: {
         type: Sequelize.BIGINT
       },

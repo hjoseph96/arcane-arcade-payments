@@ -41,8 +41,9 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true
       },
-      compressed: {
-        type: Sequelize.BOOLEAN
+      central: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       released: {
         type: Sequelize.BOOLEAN,

@@ -156,8 +156,8 @@ class BTCTransactionController {
     }
 
     req.body.coin_amount = parseFloat(req.body.coin_amount);
-    debugger
-    if (req.params.coin_type === 'BTC') throw new Error('Invalid coin_type given. Must be BTC');
+    if (req.params.coin_type === 'BTC') 
+      throw new Error('Invalid coin_type given. Must be BTC');
 
     try {
       const broadcastedTransactions = await CentralWalletService.withdraw(req.body);

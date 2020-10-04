@@ -28,7 +28,7 @@ class WalletService {
 
         return updateWallet;
       }
-      
+
       return null;
     } catch (error) {
       throw error;
@@ -42,7 +42,7 @@ class WalletService {
         include: [
           {
             model: database.BitcoinAddress,
-            attributes: ['id', 'active', 'coin_type', 'address'],
+            attributes: ['id', 'active', 'address'],
           },
           {
             model: database.BTCTransaction,
@@ -58,7 +58,7 @@ class WalletService {
           }
         ]
       });
-      
+
       return theWallet;
     } catch (error) {
       console.log(error);
@@ -76,7 +76,7 @@ class WalletService {
           include: [
             {
               model: database.BitcoinAddress,
-              attributes: ['id', 'seg_wit_address', 'active', 'coin_type', 'address', 'wif'],
+              attributes: ['id', 'seg_wit_address', 'active', 'address', 'wif'],
             },
             {
               model: database.BTCTransaction,
@@ -94,12 +94,12 @@ class WalletService {
 
   static async findByUserId(user_id) {
     try {
-      const theWallet = await database.Wallet.findOne({ 
+      const theWallet = await database.Wallet.findOne({
         where: { user_id: user_id },
         include: [
           {
             model: database.BitcoinAddress,
-            attributes: ['id', 'seg_wit_address', 'active', 'coin_type', 'address', 'wif'],
+            attributes: ['id', 'seg_wit_address', 'active', 'address', 'wif'],
           },
           {
             model: database.BTCTransaction,

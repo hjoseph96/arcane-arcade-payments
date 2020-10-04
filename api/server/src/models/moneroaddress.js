@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       defaultValue: 0.0
     },
+    central: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     address: {
       type: DataTypes.STRING,
       allowNull: false

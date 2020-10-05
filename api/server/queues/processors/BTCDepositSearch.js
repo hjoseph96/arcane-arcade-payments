@@ -19,82 +19,80 @@ const process = async (job) => {
 
   if (testMode) coins.setToTestnet();
 
-  // const sendToCentral = async (unspentTXs, { wif, destination_address, address }, total_amount) => {
-  //   const activeAddress = await CentralWalletService.fetchOrCreateCentralAddress('BTC');
-  //   const targetAddress = activeAddress.address;
-  //
-  //   const miners_fee = 0.00014626;
-  //   let amountToSend = Number((total_amount - miners_fee).toFixed(8));
-  //
-  //   if (amountToSend < 0) {
-  //     const miners_fee = 0.00000426;
-  //     amountToSend = Number((total_amount - miners_fee).toFixed(8));
-  //   }
-  //
-  //   const paymentOutputs = [{
-  //     address: targetAddress,
-  //     amount: amountToSend
-  //   }];
-  //
-  //   const paymentInputs = unspentTXs.map((unspentTx) => {
-  //     return {
-  //       transaction_id: unspentTx.tx_id,
-  //       transaction_id_n: unspentTx.tx_n,
-  //       transaction_id_script: unspentTx.script
-  //     }
-  //   });
-  //   const newTransaction = {
-  //     paymentInputs: paymentInputs,
-  //     paymentOutputs: paymentOutputs
-  //   };
-  //
-  //   console.log(paymentOutputs);
-  //   console.log(paymentInputs);
-  //
-  //   const tx = coins.createTransaction(newTransaction);
-  //   const t = coins.transaction().deserialize(tx);
-  //   const signedHex = t.sign(wif);
-  //
-  //   if (signedHex) {
-  //     const response = await btcAPI.broadcastTx(signedHex);
-  //
-  //     if (!response.error) {
-  //       // do not update, let escrow handle it
-  //
-  //       activeAddress.active = false;
-  //       activeAddress.balance = amountToSend;
-  //       await activeAddress.save(); // Update central address balance
-  //
-  //       const transactionAttrs = {
-  //         payment_inputs: newTransaction.paymentInputs,
-  //         payment_outputs: newTransaction.paymentOutputs,
-  //         raw_transaction: tx,
-  //         transaction_id: response.tx.hash
-  //       };
-  //       const createdTransaction = await BTCTransactionService.addTransaction(transactionAttrs);
-  //
-  //       if (createdTransaction) {
-  //         const userAddress = await BitcoinAddressService.findByAddress(address);
-  //
-  //         // Set user's address inactive after loading balance & saving transaction
-  //         userAddress.active = false;
-  //
-  //         if (userAddress.save()) {
-  //           return true;
-  //         }
-  //       } else {
-  //         throw new Error('Balance has been updated, transaction broadcast, but error saving Transaction to DB...');
-  //       }
-  //     } else {
-  //       let errorMsg = `Error encountered while broadcasting transaction for ${address}`;
-  //       errorMsg += `\n\n Amount: ${total_amount}, signed_hex: ${signedHex} `;
-  //       errorMsg += `\n\n Error Message: ${response.error}`;
-  //       throw new Error(errorMsg)
-  //     }
-  //   } else {
-  //     throw new Error('Error while signing transaction...');
-  //   }
-  // }
+  const sendToCentral = async (unspentTXs, { wif, address }, total_amount) => {
+    const activeAddress = await CentralWalletService.fetchOrCreateCentralBitcoinAddress();
+    const targetAddress = activeAddress.address;
+
+    const miners_fee = 0.00014626;
+    let amountToSend = Number((total_amount - miners_fee).toFixed(8));
+
+    if (amountToSend < 0) {
+      const miners_fee = 0.00000426;
+      amountToSend = Number((total_amount - miners_fee).toFixed(8));
+    }
+
+    const paymentOutputs = [{
+      address: targetAddress,
+      amount: amountToSend
+    }];
+
+    const paymentInputs = unspentTXs.map((unspentTx) => {
+      return {
+        transaction_id: unspentTx.tx_id,
+        transaction_id_n: unspentTx.tx_n,
+        transaction_id_script: unspentTx.script
+      }
+    });
+    const newTransaction = {
+      paymentInputs: paymentInputs,
+      paymentOutputs: paymentOutputs
+    };
+
+    console.log(paymentOutputs);
+    console.log(paymentInputs);
+
+    const tx = coins.createTransaction(newTransaction);
+    const t = coins.transaction().deserialize(tx);
+    const signedHex = t.sign(wif);
+
+    if (signedHex) {
+      const response = await btcAPI.broadcastTx(signedHex);
+
+      if (!response.error) {
+        activeAddress.balance += amountToSend;
+        await activeAddress.save(); // Update central address balance
+
+        const transactionAttrs = {
+          bitcoin_address_id: activeAddress.id,
+          payment_inputs: newTransaction.paymentInputs,
+          payment_outputs: newTransaction.paymentOutputs,
+          raw_transaction: tx,
+          transaction_id: response.tx.hash
+        };
+        const createdTransaction = await BTCTransactionService.addTransaction(transactionAttrs);
+
+        if (createdTransaction) {
+          const userAddress = await BitcoinAddressService.findByAddress(address);
+
+          userAddress.active = false;
+
+          if (userAddress.save()) return true;
+        } else {
+          throw new Error('Balance has been updated, transaction broadcast, but error saving Transaction to DB...');
+        }
+      } else {
+        let errorMsg = `Error encountered while broadcasting transaction for ${address}`;
+        errorMsg += `\n\n Amount: ${total_amount}, signed_hex: ${signedHex} `;
+        errorMsg += `\n\n Error Message: ${response.error}`;
+
+        console.log(errorMsg);
+
+        throw new Error(errorMsg)
+      }
+    } else {
+      throw new Error('Error while signing transaction...');
+    }
+  }
 
   let currentPercentage = 0.00;
 
@@ -124,7 +122,7 @@ const process = async (job) => {
 
         job.progress(currentPercentage);
 
-        if(currentPercentage == 100) {
+        if (currentPercentage == 100) {
           return;
         } else {
           continue;
@@ -133,6 +131,7 @@ const process = async (job) => {
         console.log('\n\n\n\n\n==============================================================================================================================');
         console.log(`| Found ${response.unspents.length} unspent transactions, worth: ${response.total_amount} BTC for address: ${currentAddress.address} |`);
         console.log('==============================================================================================================================\n\n\n\n\n');
+
 
         try {
           console.log(`TOTAL: ${response.total_amount}`);
@@ -146,7 +145,7 @@ const process = async (job) => {
 
             console.log("BALANCE SAVED")
 
-            // await sendToCentral(response.unspents, currentAddress, parseFloat(response.total_amount));
+            await sendToCentral(response.unspents, currentAddress, parseFloat(response.total_amount));
           } else {
             console.log(`Received coins in incorrect amount. Expected: ${currentAddress.deposit_amount} | Received: ${parseFloat(response.total_amount)}`)
           }

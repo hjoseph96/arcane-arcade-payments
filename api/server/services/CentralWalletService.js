@@ -236,6 +236,8 @@ class CentralWalletService {
 
 
   static async fetchOrCreateCentralBitcoinAddress() {
+    const coins = Coinjs;
+
     const testMode = [
       'development',
       'test'
@@ -251,7 +253,6 @@ class CentralWalletService {
       central: true,
       wif: newkeys.wif,
       address: newkeys.address,
-      expires_at: expiresInAnHour,
       public_key: newkeys.pubkey,
       seg_wit_address: sw.address,
       private_key: newkeys.privkey,
@@ -262,7 +263,7 @@ class CentralWalletService {
       newAddress
     );
 
-    return createAddress;
+    return createdAddress;
   }
 
 

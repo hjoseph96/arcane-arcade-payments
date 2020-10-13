@@ -3,11 +3,12 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('BitcoinAddresses', {
       id: {
+        unique: true,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4
+      },,
       balance: {
         type: Sequelize.DECIMAL
       },

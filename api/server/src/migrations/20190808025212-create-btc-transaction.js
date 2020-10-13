@@ -10,7 +10,7 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4
       },
       bitcoin_address_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: 'BitcoinAddresses',
           key: 'id'

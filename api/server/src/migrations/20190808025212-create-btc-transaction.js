@@ -9,6 +9,14 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
+      monero_address_id: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'BitcoinAddresses',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE'
+      },
       payment_outputs: {
         type: Sequelize.ARRAY(Sequelize.JSONB)
       },

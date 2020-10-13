@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      monero_address_id: {
+      bitcoin_address_id: {
         type: Sequelize.UUID,
         references: {
           model: 'BitcoinAddresses',

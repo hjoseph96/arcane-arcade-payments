@@ -51,7 +51,7 @@ class BitcoinAddressController {
       const createdAddress = await BitcoinAddressService.addAddress(newAddress);
 
       console.log(`NEW BTC ADDRESS: ${createdAddress.address}`);
-      
+
       util.setSuccess(201, 'Address Added!', createdAddress);
       return util.send(res);
     } catch (error) {
@@ -67,7 +67,7 @@ class BitcoinAddressController {
     const { address } = req.params;
 
     if (!String(address)) {
-      util.setError(400, 'Please input a valid numeric value');
+      util.setError(400, 'Please input a valid coin address');
       return util.send(res);
     }
 

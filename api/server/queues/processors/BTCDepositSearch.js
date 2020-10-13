@@ -98,7 +98,8 @@ const process = async (job) => {
 
   const addresses = await database.BitcoinAddress.findAll({
     where: {
-      active: true
+      active: true,
+      central: false
     },
     attributes: ['id', 'address', 'wif', 'deposit_amount']
   });

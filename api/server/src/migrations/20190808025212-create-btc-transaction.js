@@ -10,11 +10,8 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4
       },
       bitcoin_address_id: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'BitcoinAddresses',
-          key: 'id'
-        },
+        type: Sequelize.INTEGER,
+        foreignKey: true,
         onUpdate: 'CASCADE'
       },
       payment_outputs: {

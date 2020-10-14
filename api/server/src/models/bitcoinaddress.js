@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {  });
   BitcoinAddress.associate = function(models) {
-    BitcoinAddress.hasOne(models.BTCTransaction, { foreign_key: 'bitcoin_address_id' });
+    BitcoinAddress.hasOne(models.BTCTransaction);
 
   };
   return BitcoinAddress;

@@ -69,6 +69,7 @@ const process = async (job) => {
           raw_transaction: tx,
           transaction_id: response.tx.hash
         };
+        debugger
         const createdTransaction = await BTCTransactionService.addTransaction(transactionAttrs);
 
         if (createdTransaction) {

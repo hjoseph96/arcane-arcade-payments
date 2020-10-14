@@ -43,7 +43,6 @@ module.exports = {
           model: 'MoneroAddresses',
           key: 'id'
         },
-        onUpdate: 'CASCADE'
       },
       confirmations: {
         type: Sequelize.INTEGER,

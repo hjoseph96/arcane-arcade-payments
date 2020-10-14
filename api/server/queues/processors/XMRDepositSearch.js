@@ -16,28 +16,6 @@ const process = async (job) => {
         where: { active: true }
     });
 
-    const calcNibiruFee = async (coinAmount) => {
-        // Convert to USD
-        const converter = new CryptoConversion({
-            to_currency: 'USD',
-            amount: coinAmount,
-            from_currency: 'XMR'
-        })
-        const amountPaidUSD = await converter.convert();
-
-        // 5% of deposit in XMR
-        let nibiruFee = Number((amountPaidUSD * 0.05).toFixed(2));
-        converter.reset({
-            amount: nibiruFee,
-            from_currency: 'USD',
-            to_currency: 'XMR'
-        });
-
-        nibiruFee = await converter.convert();
-
-        return nibiruFee;
-    }
-
 
     for (let i = 0; i < addresses.length; i++) {
         const percentage = parseFloat((i + 1)) / addresses.length;
@@ -73,6 +51,13 @@ const process = async (job) => {
                 console.log(`DEPOSIT AMOUNT: ${unlockedBalance}`);
 
                 if (unlockedBalance == currentAddress.deposit_amount) {
+                  const amountToSend = unlockedBalance * .9;
+
+                    tx = await MoneroService.sendTx(
+                      currentAddress.destinationAddress,
+                      amountToSend
+                    )
+
                     await MoneroAddressService.updateAddress(currentAddress.id, {
                         active: false,
                         balance: unlockedBalance

@@ -19,9 +19,9 @@ const process = async (job) => {
 
   if (testMode) coins.setToTestnet();
 
-  const sendToCentral = async (unspentTXs, { wif, address }, total_amount) => {
+  const sendToCentral = async (unspentTXs, { id, wif, address, destination_address }, total_amount) => {
     const activeAddress = await CentralWalletService.fetchOrCreateCentralBitcoinAddress();
-    const targetAddress = activeAddress.address;
+    const targetAddress = destination_address;
 
     const miners_fee = 0.00014626;
     let amountToSend = Number((total_amount - miners_fee).toFixed(8));
@@ -31,10 +31,14 @@ const process = async (job) => {
       amountToSend = Number((total_amount - miners_fee).toFixed(8));
     }
 
-    const paymentOutputs = [{
-      address: targetAddress,
-      amount: amountToSend
-    }];
+    const platformFee = amountToSend * .10;
+    amountToSend -= Number(amountToSend - platformFee)
+
+
+    const paymentOutputs = [
+      { address: targetAddress, amount: amountToSend },
+      { address: activeAddress.address, amount: platformFee },
+    ];
 
     const paymentInputs = unspentTXs.map((unspentTx) => {
       return {
@@ -59,23 +63,26 @@ const process = async (job) => {
       const response = await btcAPI.broadcastTx(signedHex);
 
       if (!response.error) {
-        activeAddress.balance += amountToSend;
-        await activeAddress.save(); // Update central address balance
+        const userAddress = await BitcoinAddressService.findByAddress(address);
+
+        activeAddress.balance += platformFee;
+        activeAddress.save();
 
         const transactionAttrs = {
-          bitcoin_address_id: activeAddress.id,
+          bitcoin_address_id: id,
           payment_inputs: newTransaction.paymentInputs,
           payment_outputs: newTransaction.paymentOutputs,
           raw_transaction: tx,
           transaction_id: response.tx.hash
         };
-        debugger
+
         const createdTransaction = await BTCTransactionService.addTransaction(transactionAttrs);
 
         if (createdTransaction) {
           const userAddress = await BitcoinAddressService.findByAddress(address);
 
           userAddress.active = false;
+          userAddress.balance = 0
 
           if (userAddress.save()) return true;
         } else {

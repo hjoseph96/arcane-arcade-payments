@@ -16,23 +16,22 @@ class BitcoinAddressController {
   static async addAddress(req, res) {
     const coins = Coinjs
 
+    const { deposit_amount, expires_at, destination_address } = req.body;
 
-    if (!req.body.expires_at || !req.body.deposit_amount) {
+    if (!expires_at || !deposit_amount, !destination_address) {
       console.log(req.body)
       util.setError(400, 'Please provide complete details');
       return util.send(res);
     }
 
-
     const testMode = ['development', 'test'].indexOf(process.env.NODE_ENV) >= 0;
-
     if (testMode) coins.setToTestnet();
 
     let newkeys = coins.newKeys(null);
     let sw = coins.bech32Address(newkeys.pubkey);
 
-    const expiresInAnHour   = Date.parse(req.body.expires_at);
-    const expectedDeposit   = req.body.deposit_amount;
+    const expiresInAnHour   = Date.parse(expires_at);
+    const expectedDeposit   = deposit_amount;
 
     const newAddress = {
       active: true,
@@ -44,7 +43,8 @@ class BitcoinAddressController {
       private_key: newkeys.privkey,
       redeem_script: sw.redeemscript,
       compressed: newkeys.compressed,
-      deposit_amount: expectedDeposit
+      deposit_amount: expectedDeposit,
+      destination_address: destination_address
     }
 
     try {

@@ -19,7 +19,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       destination_address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       redeem_script: {
         type: Sequelize.STRING

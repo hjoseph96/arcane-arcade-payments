@@ -47,6 +47,7 @@ const process = async (job) => {
         transaction_id_script: unspentTx.script
       }
     });
+
     const newTransaction = {
       paymentInputs: paymentInputs,
       paymentOutputs: paymentOutputs
@@ -63,10 +64,9 @@ const process = async (job) => {
       const response = await btcAPI.broadcastTx(signedHex);
 
       if (!response.error) {
-        const userAddress = await BitcoinAddressService.findByAddress(address);
 
         activeAddress.balance += platformFee;
-        activeAddress.save();
+        activeAddress.save()
 
         const transactionAttrs = {
           bitcoin_address_id: id,
@@ -109,7 +109,7 @@ const process = async (job) => {
       active: true,
       central: false
     },
-    attributes: ['id', 'address', 'wif', 'deposit_amount']
+    attributes: ['id', 'address', 'wif', 'deposit_amount', 'destination_address']
   });
 
   for (let i = 0; i < addresses.length; i++) {

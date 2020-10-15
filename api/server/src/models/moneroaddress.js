@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    destination_address: {
+      type: DataTypes.STRING,
+    },
     deposit_amount: {
       type: DataTypes.DECIMAL,
       defaultValue: 0.0

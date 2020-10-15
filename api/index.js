@@ -1,14 +1,14 @@
 import config from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
+import axios from 'axios';
 
 import bitcoinRoutes from './server/routes/BitcoinAddressRoutes';
 import BTCTransactionRoutes from './server/routes/BTCTransactionRoutes';
 import pgpRoutes from './server/routes/PGPRoutes';
 import moneroRoutes from './server/routes/MoneroRoutes';
 
-import CentralWalletService from './server/services/CentralWalletService.js'
-import MoneroService from './server/services/MoneroService'
+
 import DetectBTCDepositsQueue from './server/queues/DetectBTCDepositsQueue'
 import DetectMoneroDepositsQueue from './server/queues/DetectMoneroDeposits'
 
@@ -21,6 +21,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const port = process.env.PORT || 8000;// when a random route is inputed
 
 const Arena = require('bull-arena');
+
+const request = require('request');
+const fs = require('fs');
+const macaroon = fs.readFileSync(`${process.env.LN_DIR}/admin.macaroon`).toString('hex');
+
 
 // const redisUrl = process.env.REDIS_URL;
 // const Bee = require('bee-queue');
@@ -68,7 +73,14 @@ DetectBTCDepositsQueue.add(
 );
 
 DetectMoneroDepositsQueue.empty();
-DetectMoneroDepositsQueue.add({ env: process.env.NODE_ENV }, { repeat: { every: 15000 }, removeOnComplete: false, removeOnFail: false });
+DetectMoneroDepositsQueue.add(
+  { env: process.env.NODE_ENV }, 
+  {
+    repeat: { every: 15000 },
+    removeOnComplete: false,
+    removeOnFail: false 
+  }
+);
 
 
 export default app;

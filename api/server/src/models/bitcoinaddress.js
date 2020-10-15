@@ -29,6 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    destination_address: {
+      type: DataTypes.STRING,
+    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

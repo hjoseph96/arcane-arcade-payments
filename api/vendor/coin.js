@@ -1978,7 +1978,6 @@ coinjs.addressDecode = function(addr) {
       return false;
     }
   } catch (e) {
-    debugger;
     let bech32rs = coinjs.bech32redeemscript(addr);
     if (bech32rs) {
       return {
@@ -2700,7 +2699,6 @@ coinjs.createTransaction = (options) => {
     const outgoingAddress = coinjs.addressDecode(outputRow.address);
 
     if (!outgoingAddress) outgoingAddress = coinjs.bech32_decode(outputRow.address);
-    debugger;
 
     const paymentAmount = outputRow.amount;
 

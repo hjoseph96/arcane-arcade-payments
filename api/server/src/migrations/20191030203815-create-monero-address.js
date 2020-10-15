@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       destination_address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       active: {
         type: Sequelize.BOOLEAN,

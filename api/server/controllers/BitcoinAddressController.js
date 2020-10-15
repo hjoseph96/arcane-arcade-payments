@@ -35,6 +35,7 @@ class BitcoinAddressController {
 
     const newAddress = {
       active: true,
+      central: false,
       wif: newkeys.wif,
       address: newkeys.address,
       expires_at: expiresInAnHour,
@@ -57,6 +58,7 @@ class BitcoinAddressController {
     } catch (error) {
       console.log(error);
 
+      debugger
       util.setError(400, error.message);
       return util.send(res);
     }

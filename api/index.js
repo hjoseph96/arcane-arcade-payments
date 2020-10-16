@@ -8,9 +8,8 @@ import BTCTransactionRoutes from './server/routes/BTCTransactionRoutes';
 import pgpRoutes from './server/routes/PGPRoutes';
 import moneroRoutes from './server/routes/MoneroRoutes';
 
-
-import DetectBTCDepositsQueue from './server/queues/DetectBTCDepositsQueue'
-import DetectMoneroDepositsQueue from './server/queues/DetectMoneroDeposits'
+import DetectBTCDepositsQueue from './server/queues/DetectBTCDepositsQueue';
+import DetectMoneroDepositsQueue from './server/queues/DetectMoneroDeposits';
 
 config.config();
 
@@ -18,14 +17,16 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const port = process.env.PORT || 8000;// when a random route is inputed
+const port = process.env.PORT || 8000; // when a random route is inputed
 
 const Arena = require('bull-arena');
 
 const request = require('request');
 const fs = require('fs');
-const macaroon = fs.readFileSync(`${process.env.LN_DIR}/admin.macaroon`).toString('hex');
 
+// const macaroon = fs
+//   .readFileSync(`${process.env.LN_DIR}/admin.macaroon`)
+//   .toString('hex');
 
 // const redisUrl = process.env.REDIS_URL;
 // const Bee = require('bee-queue');
@@ -52,10 +53,11 @@ app.use('/api/v1/btc_transactions', BTCTransactionRoutes);
 
 // app.use('/arena', arena);
 
-app.get('*', (req, res) => res.status(200).send({
-  message: 'Welcome to this API.'
-}));
-
+app.get('*', (req, res) =>
+  res.status(200).send({
+    message: 'Welcome to this API.',
+  })
+);
 
 app.listen(port, () => {
   console.log(`Server is running on PORT ${port}`);
@@ -68,19 +70,18 @@ DetectBTCDepositsQueue.add(
   {
     repeat: { every: 15000 },
     removeOnComplete: false,
-    removeOnFail: false
+    removeOnFail: false,
   }
 );
 
 DetectMoneroDepositsQueue.empty();
 DetectMoneroDepositsQueue.add(
-  { env: process.env.NODE_ENV }, 
+  { env: process.env.NODE_ENV },
   {
     repeat: { every: 15000 },
     removeOnComplete: false,
-    removeOnFail: false 
+    removeOnFail: false,
   }
 );
-
 
 export default app;

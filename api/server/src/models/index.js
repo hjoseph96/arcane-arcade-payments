@@ -37,7 +37,6 @@ if (config.environment === 'production') {
   );
 }
 
-sequelize.sync({force: true})
 
 fs
   .readdirSync(__dirname)

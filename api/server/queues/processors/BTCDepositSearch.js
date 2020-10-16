@@ -9,14 +9,13 @@ import BitcoinAddressService from '../../services/BitcoinAddressService';
 import CentralWalletService from '../../services/CentralWalletService';
 
 
-const process = async (job) => {
+const process = async (job, done) => {
   console.log('****** SCANNING BTC DEPOSITS ******');
   const btcAPI = new BitcoinExternalAPI('BTC');
 
   const coins = Coinjs;
 
   const testMode = ['development', 'test'].indexOf(job.data.env) >= 0;
-
   if (testMode) coins.setToTestnet();
 
   const sendToCentral = async (unspentTXs, { id, wif, address, destination_address }, total_amount) => {
@@ -35,7 +34,7 @@ const process = async (job) => {
     amountToSend -= platformFee
 
     console.log("======================================")
-    console.log(`| Amont to Send: ${amountToSend}     |`)
+    console.log(`| Amount to Send: ${amountToSend}     |`)
     console.log(`| Platform fee: ${platformFee}       |`)
     console.log("======================================")
 
@@ -137,6 +136,8 @@ const process = async (job) => {
         job.progress(currentPercentage);
 
         if (currentPercentage == 100) {
+          done();
+          
           return;
         } else {
           continue;

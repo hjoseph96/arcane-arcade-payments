@@ -248,6 +248,17 @@ class CentralWalletService {
     let newkeys = coins.newKeys(null);
     let sw = coins.bech32Address(newkeys.pubkey);
 
+    const centralAddresses = await database.BitcoinAddress.findAll({
+      where: {
+        active: true,
+        central: false
+      }
+    });
+
+    const centralAddress = centralAddresses[0];
+
+    if (centralAddress) return centralAddress;
+
     const newAddress = {
       active: true,
       central: true,

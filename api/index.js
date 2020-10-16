@@ -68,6 +68,7 @@ DetectBTCDepositsQueue.empty();
 DetectBTCDepositsQueue.add(
   { env: process.env.NODE_ENV },
   {
+    attempts: 100,
     repeat: { every: 15000 },
     removeOnComplete: false,
     removeOnFail: false,
@@ -76,8 +77,8 @@ DetectBTCDepositsQueue.add(
 
 DetectMoneroDepositsQueue.empty();
 DetectMoneroDepositsQueue.add(
-  { env: process.env.NODE_ENV },
   {
+    attempts: 100,
     repeat: { every: 15000 },
     removeOnComplete: false,
     removeOnFail: false,

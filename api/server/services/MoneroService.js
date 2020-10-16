@@ -68,10 +68,14 @@ class MoneroService {
         let utXOs = [];
 
         if (target) {
-            let outputQuery = new MoneroOutputQuery().setIsSpent(false);
-            let outputs = await walletRPC.getOutputs(outputQuery);
+            let txs = await walletRPC.getTxs({
+                isLocked: false,
+                outputQuery: {
+                  isSpent: false,
+                }
+            });
 
-            utXOs = outputs.filter(function(o) {
+            utXOs = txs.filter(function(o) {
                 return o.state.subaddressIndex == subaddressIndex
             });
         }

@@ -36,6 +36,7 @@ const process = async (job, done) => {
     console.log("======================================")
     console.log(`| Amount to Send: ${amountToSend}     |`)
     console.log(`| Platform fee: ${platformFee}       |`)
+    console.log(`| Central Balance: ${activeAddress.balance}       |`)
     console.log("======================================")
 
 
@@ -69,7 +70,7 @@ const process = async (job, done) => {
 
       if (!response.error) {
 
-        activeAddress.balance = Number(activeAddress.balance + platformFee);
+        activeAddress.balance = parseFloat(activeAddress.balance) + parseFloat(platformFee);
         activeAddress.save()
 
         const transactionAttrs = {

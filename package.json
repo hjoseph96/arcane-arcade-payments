@@ -11,6 +11,7 @@
     "bull-arena": "^3.2.2",
     "cryptojs": "^2.5.3",
     "express": "^4.17.1",
+    "node-cron": "^2.0.3",
     "openpgp": "^4.10.8",
     "pg": "^8.3.3",
     "random-bytes": "^1.0.0"

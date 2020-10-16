@@ -69,7 +69,7 @@ const process = async (job, done) => {
 
       if (!response.error) {
 
-        activeAddress.balance += platformFee;
+        activeAddress.balance = Number(activeAddress.balance + platformFee);
         activeAddress.save()
 
         const transactionAttrs = {

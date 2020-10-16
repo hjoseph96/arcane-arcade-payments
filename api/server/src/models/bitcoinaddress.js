@@ -3,13 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   const BitcoinAddress = sequelize.define(
     'BitcoinAddress',
     {
-      id: {
-        unique: true,
-        allowNull: false,
-        primaryKey: true,
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-      },
       seg_wit_address: {
         type: DataTypes.STRING,
         allowNull: false,

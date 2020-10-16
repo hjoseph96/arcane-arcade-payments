@@ -32,7 +32,12 @@ const process = async (job) => {
     }
 
     const platformFee = amountToSend * .10;
-    amountToSend -= Number(amountToSend - platformFee)
+    amountToSend -= platformFee
+
+    console.log("======================================")
+    console.log(`| Amont to Send: ${amountToSend}     |`)
+    console.log(`| Platform fee: ${platformFee}       |`)
+    console.log("======================================")
 
 
     const paymentOutputs = [

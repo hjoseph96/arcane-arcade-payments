@@ -6,64 +6,64 @@ module.exports = {
         unique: true,
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.INTEGER,
-        autoincrement: true
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
       },
       balance: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       deposit_amount: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       seg_wit_address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       destination_address: {
         type: Sequelize.STRING,
       },
       redeem_script: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       private_key: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       public_key: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       wif: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       address: {
         active: true,
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       active: {
         type: Sequelize.BOOLEAN,
-        defaultValue: true
+        defaultValue: true,
       },
       central: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
       },
       released: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
       },
       expires_at: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('BitcoinAddresses');
-  }
+  },
 };

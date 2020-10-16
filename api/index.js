@@ -24,27 +24,6 @@ const Arena = require('bull-arena');
 const request = require('request');
 const fs = require('fs');
 
-// const macaroon = fs
-//   .readFileSync(`${process.env.LN_DIR}/admin.macaroon`)
-//   .toString('hex');
-
-// const redisUrl = process.env.REDIS_URL;
-// const Bee = require('bee-queue');
-// const arena = Arena({
-//    Bee,
-//    queues: [
-//       {
-//          name: 'detect_btc_deposits_queue',
-//          hostId: 'Bitcoin Deposit Scanner',
-//          url: redisUrl
-//       },
-//       {
-//         name: 'detect_monero_deposits_queue',
-//         hostId: 'Monero Deposit Scanner',
-//         url: redisUrl
-//       }
-//    ]
-// }, { port: port, disableListen : true });
 
 app.use('/api/v1/pgp', pgpRoutes);
 app.use('/api/v1/xmr', moneroRoutes);
@@ -70,8 +49,6 @@ DetectBTCDepositsQueue.add(
   {
     attempts: 100,
     repeat: { every: 15000 },
-    removeOnComplete: false,
-    removeOnFail: false,
   }
 );
 
@@ -80,8 +57,6 @@ DetectMoneroDepositsQueue.add(
   {
     attempts: 100,
     repeat: { every: 15000 },
-    removeOnComplete: false,
-    removeOnFail: false,
   }
 );
 

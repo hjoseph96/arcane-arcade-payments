@@ -24,7 +24,13 @@ export default class MoneroController {
             destination_address: destination_address
           });
 
-          util.setSuccess(200, 'Created a new Monero Address.', newAddress);
+          DetectMoneroDepositsQueue.add(
+            {
+              attempts: 100,
+              repeat: { every: 15000 },
+            }
+          );
+          util.setSuccess(200, 'Created a new Monero Address.', newAddress.address);
 
           return util.send(res);
        } catch (e) {

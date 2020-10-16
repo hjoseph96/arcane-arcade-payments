@@ -251,7 +251,7 @@ class CentralWalletService {
     const centralAddresses = await database.BitcoinAddress.findAll({
       where: {
         active: true,
-        central: false
+        central: true
       }
     });
 

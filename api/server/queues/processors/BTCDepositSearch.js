@@ -108,6 +108,7 @@ const process = async (job, done) => {
 
   let currentPercentage = 0.00;
 
+  console.log('*********** CHECKING ADDRESSES **********')
   const addresses = await database.BitcoinAddress.findAll({
     where: {
       active: true,
@@ -137,7 +138,7 @@ const process = async (job, done) => {
 
         if (currentPercentage == 100) {
           done();
-          
+
           return;
         } else {
           continue;

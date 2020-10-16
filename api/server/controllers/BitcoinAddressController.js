@@ -2,7 +2,7 @@ import BitcoinAddressService from '../services/BitcoinAddressService';
 import Util from '../utils/Utils';
 
 import Coinjs from '../../vendor/coin';
-import CryptoConversion from '../utils/CryptoConversion';
+import DetectBTCDepositsQueue from '../queues/DetectBTCDepositsQueue';
 import BitcoinExternalAPI from '../utils/BitcoinExternalAPI';
 import CentralWalletService from '../services/CentralWalletService';
 import BTCTransactionService from '../services/BTCTransactionService';
@@ -52,6 +52,15 @@ class BitcoinAddressController {
 
       console.log(`COIN AMOUNT: ${createdAddress.deposit_amount}`);
       console.log(`NEW BTC ADDRESS: ${createdAddress.address}`);
+
+      // Queue Coin Deposits Search
+      DetectBTCDepositsQueue.add(
+        { env: process.env.NODE_ENV },
+        {
+          attempts: 100,
+          repeat: { every: 15000 },
+        }
+);
 
       util.setSuccess(201, 'Address Added!', createdAddress.address);
       return util.send(res);

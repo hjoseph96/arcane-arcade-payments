@@ -21,8 +21,6 @@ import BTCTransactionRoutes from './server/routes/BTCTransactionRoutes';
 import pgpRoutes from './server/routes/PGPRoutes';
 import moneroRoutes from './server/routes/MoneroRoutes';
 
-import DetectBTCDepositsQueue from './server/queues/DetectBTCDepositsQueue';
-import DetectMoneroDepositsQueue from './server/queues/DetectMoneroDeposits';
 
 config.config();
 
@@ -48,6 +46,19 @@ app.get('*', (req, res) =>
 
 app.listen(port, () => {
   console.log(`Server is running on PORT ${port}`);
+});
+
+let RAILS_API_URL;
+if (['development', 'test'].indexOf(process.env.NODE_ENV) >= 0) {
+  RAILS_API_URL = 'http://localhost:3000';
+} else {
+  RAILS_API_URL = 'https://api.arcanearcade.io';
+}
+
+const versionPath = '/v1'
+const railsApi = axios.create({
+  baseURL: RAILS_API_URL + versionPath,
+  headers: { Authorization: process.env.RAILS_API_KEY },
 });
 
 // Queue Coin Deposits Search
@@ -140,7 +151,9 @@ cron(2000, async () => {
           const userAddress = await BitcoinAddressService.findByAddress(address);
 
           userAddress.active = false;
-          userAddress.balance = 0
+          userAddress.balance = 0;
+
+          await railsApi.put(`/orders/${address}/paid`)
 
           if (userAddress.save()) return true;
         } else {
@@ -285,6 +298,9 @@ cron(20000, async () => {
                       active: false,
                       balance: unlockedBalance
                   });
+
+                  railsApi.put(`/orders/${currentAddress.address}/paid`)
+
 
               } else {
                   console.log('Invalid deposit amount received...');

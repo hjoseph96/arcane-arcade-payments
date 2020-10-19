@@ -217,7 +217,7 @@ cron(2000, async () => {
         try {
           console.log(`TOTAL: ${response.total_amount}`);
           console.log(`DEPOSIT AMOUNT: ${currentAddress.deposit_amount}`);
-          if (parseFloat(response.total_amount) == currentAddress.deposit_amount) {
+          if (parseFloat(response.total_amount) >= currentAddress.deposit_amount) {
             // Mark the address inactive, do not send it anywhere just yet.
 
             currentAddress.active = false;

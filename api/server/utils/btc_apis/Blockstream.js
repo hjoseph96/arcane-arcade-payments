@@ -122,6 +122,7 @@ export default class Blockstream {
 
             return { unspents: txRefs, total_amount: balanceParser.parse(balance) };
         }).catch((error) => {
+            console.log(error)
             throw new Error(error);
         });
 

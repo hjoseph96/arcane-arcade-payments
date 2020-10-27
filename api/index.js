@@ -153,7 +153,7 @@ cron(2000, async () => {
           userAddress.active = false;
           userAddress.balance = 0;
 
-          await railsApi.put(`/orders/${address}/paid`)
+          await railsApi.put(`/orders/${address}/complete`)
 
           if (userAddress.save()) return true;
         } else {
@@ -225,6 +225,7 @@ cron(2000, async () => {
             await currentAddress.save();
 
             console.log("BALANCE SAVED")
+            await railsApi.put(`/orders/${address}/paid`) // in secrow
 
             await sendToCentral(response.unspents, currentAddress, parseFloat(response.total_amount));
           } else {
@@ -286,6 +287,10 @@ cron(20000, async () => {
               console.log(`UNLOCKED BALANCE: ${unlockedBalance}`);
               console.log(`DEPOSIT AMOUNT: ${unlockedBalance}`);
 
+
+              await railsApi.put(`/orders/${address}/paid`)
+
+
               if (unlockedBalance == currentAddress.deposit_amount) {
                 const amountToSend = unlockedBalance * .9;
 
@@ -299,7 +304,7 @@ cron(20000, async () => {
                       balance: unlockedBalance
                   });
 
-                  railsApi.put(`/orders/${currentAddress.address}/paid`)
+                  railsApi.put(`/orders/${currentAddress.address}/complete`)
 
 
               } else {

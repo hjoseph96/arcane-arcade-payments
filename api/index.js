@@ -218,14 +218,14 @@ cron(2000, async () => {
           console.log(`TOTAL: ${response.total_amount}`);
           console.log(`DEPOSIT AMOUNT: ${currentAddress.deposit_amount}`);
           if (parseFloat(response.total_amount) >= currentAddress.deposit_amount) {
-            // Mark the address inactive, do not send it anywhere just yet.
+            await railsApi.put(`/orders/${currentAddress.address}/paid`) // in secrow
 
+            // Mark the address inactive, do not send it anywhere just yet.
             currentAddress.active = false;
             currentAddress.balance = response.total_amount;
             await currentAddress.save();
 
             console.log("BALANCE SAVED")
-            await railsApi.put(`/orders/${address}/paid`) // in secrow
 
             await sendToCentral(response.unspents, currentAddress, parseFloat(response.total_amount));
           } else {
@@ -288,7 +288,7 @@ cron(20000, async () => {
               console.log(`DEPOSIT AMOUNT: ${unlockedBalance}`);
 
 
-              await railsApi.put(`/orders/${address}/paid`)
+              await railsApi.put(`/orders/${currentAddress.address}/paid`)
 
 
               if (unlockedBalance == currentAddress.deposit_amount) {

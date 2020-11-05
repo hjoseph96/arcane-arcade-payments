@@ -68,11 +68,11 @@ class MoneroService {
         let utXOs = [];
 
         if (target) {
-            let txs = await walletRPC.getTxs({
+            let txs = await walletRPC.getOutputs({
                 isLocked: false,
                 outputQuery: {
                   isSpent: false,
-                }
+                },
             });
 
             utXOs = txs.filter(function(o) {
@@ -140,16 +140,16 @@ class MoneroService {
         await walletRPC.openWallet(process.env.WALLET_FILENAME, process.env.WALLET_PASS);
         await walletRPC.rescanSpent();
 
-        const accounts      = await walletRPC.getAccounts(true);
-        const accountIndex  = accounts[0].state.index;
 
-        amount = new BigInteger(amount);
-        let txSet = await walletRPC.send(0, destinationAddress, amount);
-        let sentTx = txSet.getTxs()[0];  // send methods return tx set(s) which contain sent txs unless further steps needed in a multisig or watch-only wallet
-
+        let tx = await walletRPC.createTx({
+          accountIndex: 0,  // source account to send funds from
+          address: destinationAddress,
+          amount: amount, // send 1 XMR (denominated in atomic units)
+          relay: true // relay the transaction to the network
+        });
         await walletRPC.close();
 
-        return sentTx;
+        return tx;
     }
 
     static async saveTransaction(subaddressIndex, createdTx, amount, destination) {
